@@ -17,6 +17,8 @@ set(SOURCES
     src/Main.cpp
     src/lunet/Lexer.cpp
     src/lunet/Error.cpp
+    src/lunet/Parser.cpp
+    src/lunet/Interpreter.cpp
 )
 
 # Define headers
@@ -25,6 +27,8 @@ set(HEADERS
     src/lunet/Lexer.h
     src/lunet/Token.h
     src/lunet/Error.h
+    src/lunet/Parser.h
+    src/lunet/Interpreter.h
 )
 
 # Create executable

@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 #include <any>
+#include "lunet/Parser.h"
+#include "lunet/Interpreter.h"
 
 std::string tokenTypeToString(TokenType type) {
     switch (type) {
@@ -63,15 +65,20 @@ int main(int argc, char** argv) {
     if (tokenRet.error.hasError) {
         std::cout << tokenRet.error.Get() << std::endl;
     } else {
-        for (auto& token: tokenRet.tokens) {
-            std::cout << tokenTypeToString(token.type) << ", ";
-            if (!token.hasValue) {
-                std::cout << "NULL" << std::endl;
-            } else {
-                std::cout << anyToString(token.value) << std::endl;
-            }
+        // Parse the tokens
+        Parser parser(tokenRet.tokens);
+        ParseResult parseResult = parser.Parse();
+
+        if (parseResult.hasError) {
+            std::cout << "Parse error occurred" << std::endl;
+        } else if (parseResult.node) {
+            // Interpret the result
+            Interpreter interpreter;
+            std::any result = interpreter.Visit(parseResult.node);
+        } else {
+            std::cout << "No AST node created - possibly a parsing issue" << std::endl;
         }
     }
 
     return 0;
-}
+};
