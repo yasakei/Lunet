@@ -8,6 +8,7 @@
 #include <tuple>
 #include <variant>
 #include "Error.h"
+#include <cctype>
 
 struct TokenRet {
     std::vector<Token> tokens{};

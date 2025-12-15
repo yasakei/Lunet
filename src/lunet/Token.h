@@ -18,9 +18,11 @@ enum TokenType {
 struct Token {
     std::any value{};
     TokenType type{};
-    Token(TokenType t):type(t){};
-    Token(TokenType t, int v):type(t), value(v){};
-    Token(TokenType t, float v):type(t), value(v){};
+    bool hasValue{false};
+    Token(TokenType t):type(t), hasValue(false){};
+    Token(TokenType t, int v):type(t), value(v), hasValue(true){};
+    Token(TokenType t, float v):type(t), value(v), hasValue(true){};
+    Token(TokenType t, std::string v):type(t), value(v), hasValue(true){};
 };
 
 #endif

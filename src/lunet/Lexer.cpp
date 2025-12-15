@@ -4,7 +4,7 @@
 Lexer::Lexer(std::string src) {
     source = src;
     pos = -1;
-    current = ' ';
+    current = '\0';
     Advance();
 }
 
@@ -16,12 +16,11 @@ void Lexer::Advance() {
 TokenRet Lexer::MakeTokens() {
     std::vector<Token> tokens;
 
-    while (current != ' ') {
-        if (current == '\t') {
+    while (current != '\0') {
+        if (current == ' ' || current == '\t' || current == '\n' || current == '\r') {
             Advance();
         } else if (DIGITS.find(current) != std::string::npos) {
             tokens.push_back(MakeNumber());
-            Advance();
         } else if (current == '+') {
             tokens.push_back(Token(TokenType::PLUS));
             Advance();
@@ -40,6 +39,13 @@ TokenRet Lexer::MakeTokens() {
         } else if (current == ')') {
             tokens.push_back(Token(TokenType::RPAREN));
             Advance();
+        } else if (isalpha(current)) { // Handle identifiers
+            std::string idStr = "";
+            while (current != '\0' && (isalnum(current) || current == '_')) {
+                idStr += current;
+                Advance();
+            }
+            tokens.push_back(Token(TokenType::IDENTIFIER, idStr));
         } else {
             char ch = current;
             Advance();
@@ -59,7 +65,7 @@ Token Lexer::MakeNumber() {
     std::string numStr = "";
     int dotCount = 0;
 
-    while (current != ' ' && DIGITS.find(current+".") != std::string::npos) {
+    while (current != ' ' && (DIGITS.find(current) != std::string::npos || current == '.')) {
         if (current == '.') {
             if (dotCount == 1) break;
             dotCount += 1;
@@ -67,6 +73,7 @@ Token Lexer::MakeNumber() {
         } else {
             numStr += current;
         }
+        Advance(); // Advance to the next character
     }
 
     if (dotCount == 0) {
