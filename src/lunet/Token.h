@@ -5,6 +5,7 @@
 
 enum TokenType {
     IDENTIFIER,
+    STRING,
     LPAREN,
     RPAREN,
     INT,

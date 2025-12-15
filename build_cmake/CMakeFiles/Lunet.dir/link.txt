@@ -1,1 +1,0 @@
-/usr/sbin/c++ -Wl,--dependency-file=CMakeFiles/Lunet.dir/link.d CMakeFiles/Lunet.dir/src/Main.cpp.o CMakeFiles/Lunet.dir/src/lunet/Lexer.cpp.o CMakeFiles/Lunet.dir/src/lunet/Error.cpp.o -o Lunet

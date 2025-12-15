@@ -39,7 +39,18 @@ TokenRet Lexer::MakeTokens() {
         } else if (current == ')') {
             tokens.push_back(Token(TokenType::RPAREN));
             Advance();
-        } else if (isalpha(current)) { // Handle identifiers
+        } else if (current == '"') { // Handle string literals
+            Advance(); // Skip the opening quote
+            std::string strValue = "";
+            while (current != '\0' && current != '"') {
+                strValue += current;
+                Advance();
+            }
+            if (current == '"') {
+                Advance(); // Skip the closing quote
+            }
+            tokens.push_back(Token(TokenType::STRING, strValue)); // Treat as string literal
+        } else if (isalpha(current)) { // Handle identifiers and function calls
             std::string idStr = "";
             while (current != '\0' && (isalnum(current) || current == '_')) {
                 idStr += current;

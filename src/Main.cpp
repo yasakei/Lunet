@@ -9,6 +9,7 @@
 std::string tokenTypeToString(TokenType type) {
     switch (type) {
         case TokenType::IDENTIFIER: return "IDENTIFIER";
+        case TokenType::STRING: return "STRING";
         case TokenType::LPAREN: return "LPAREN";
         case TokenType::RPAREN: return "RPAREN";
         case TokenType::INT: return "INT";
