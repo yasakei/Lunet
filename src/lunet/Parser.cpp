@@ -27,6 +27,12 @@ struct FunctionCallNode : ASTNode {
         : functionName(name), arguments(args) {}
 };
 
+struct StatementListNode : ASTNode {
+    std::vector<std::shared_ptr<ASTNode>> statements;
+    StatementListNode(std::vector<std::shared_ptr<ASTNode>> stmts)
+        : statements(stmts) {}
+};
+
 Parser::Parser(std::vector<Token> tokens_) {
     tokens = tokens_;
     pos = -1;
@@ -38,14 +44,54 @@ Token Parser::Advance() {
     if (pos < tokens.size()) {
         current = tokens[pos];
     } else {
+        
         current = Token(TokenType::INT, 0);
     }
     return current;
 }
 
+std::vector<std::shared_ptr<ASTNode>> Parser::ParseStatements() {
+    std::vector<std::shared_ptr<ASTNode>> statements;
+
+    
+    while (pos < static_cast<int>(tokens.size())) {
+        if (current.type == TokenType::INT || current.type == TokenType::FLOAT ||
+            current.type == TokenType::STRING || current.type == TokenType::IDENTIFIER ||
+            current.type == TokenType::LPAREN ||
+            (current.type == TokenType::PLUS || current.type == TokenType::MINUS)) {
+
+            std::shared_ptr<ASTNode> expr = ParseExpression();
+            if (expr) {
+                statements.push_back(expr);
+            }
+        } else {
+            Advance();
+        }
+
+        if (pos >= static_cast<int>(tokens.size())) {
+            break;
+        }
+    }
+
+    return statements;
+}
+
 ParseResult Parser::Parse() {
-    ParseResult result = {ParseExpression(), IllegalCharacterError(), false};
-    return result;
+    std::vector<std::shared_ptr<ASTNode>> statements = ParseStatements();
+
+    if (statements.empty()) {
+        ParseResult result = {nullptr, IllegalCharacterError(), false};
+        return result;
+    } else if (statements.size() == 1) {
+        // If there's only one statement, return it directly
+        ParseResult result = {statements[0], IllegalCharacterError(), false};
+        return result;
+    } else {
+        // If there are multiple statements, wrap them in a StatementListNode
+        std::shared_ptr<StatementListNode> stmtList = std::make_shared<StatementListNode>(statements);
+        ParseResult result = {stmtList, IllegalCharacterError(), false};
+        return result;
+    }
 }
 
 std::shared_ptr<ASTNode> Parser::ParseExpression() {

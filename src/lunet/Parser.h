@@ -7,7 +7,8 @@
 #include "Token.h"
 #include "Error.h"
 
-struct ASTNode;  
+struct ASTNode;
+struct StatementListNode;  
 
 struct ParseResult {
     std::shared_ptr<ASTNode> node;
@@ -20,6 +21,7 @@ public:
     Parser(std::vector<Token> tokens_);
 
     ParseResult Parse();
+    std::vector<std::shared_ptr<ASTNode>> ParseStatements();
 
 private:
     std::vector<Token> tokens;

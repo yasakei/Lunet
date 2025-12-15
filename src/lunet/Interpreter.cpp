@@ -9,6 +9,8 @@ std::any Interpreter::Visit(std::shared_ptr<ASTNode> node) {
         return VisitBinaryOpNode(binaryOpNode);
     } else if (auto functionCallNode = std::dynamic_pointer_cast<FunctionCallNode>(node)) {
         return VisitFunctionCallNode(functionCallNode);
+    } else if (auto statementListNode = std::dynamic_pointer_cast<StatementListNode>(node)) {
+        return VisitStatementListNode(statementListNode);
     }
 
     return std::any();
@@ -86,4 +88,11 @@ std::any Interpreter::VisitFunctionCallNode(std::shared_ptr<FunctionCallNode> no
 
     std::cout << "Unknown function: " << node->functionName << std::endl;
     return std::any();
+}
+
+std::any Interpreter::VisitStatementListNode(std::shared_ptr<StatementListNode> node) {
+    for (auto statement : node->statements) {
+        Visit(statement);  // Execute each statement
+    }
+    return std::any();  // Return empty any for statement lists
 }

@@ -31,6 +31,12 @@ struct FunctionCallNode : ASTNode {
         : functionName(name), arguments(args) {}
 };
 
+struct StatementListNode : ASTNode {
+    std::vector<std::shared_ptr<ASTNode>> statements;
+    StatementListNode(std::vector<std::shared_ptr<ASTNode>> stmts)
+        : statements(stmts) {}
+};
+
 class Interpreter {
 public:
     std::any Visit(std::shared_ptr<ASTNode> node);
@@ -38,6 +44,7 @@ public:
     std::any VisitNumberNode(std::shared_ptr<NumberNode> node);
     std::any VisitBinaryOpNode(std::shared_ptr<BinaryOpNode> node);
     std::any VisitFunctionCallNode(std::shared_ptr<FunctionCallNode> node);
+    std::any VisitStatementListNode(std::shared_ptr<StatementListNode> node);
 
 private:
     std::map<std::string, std::any> variables;
